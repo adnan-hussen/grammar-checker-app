@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CheckCircle, AlertCircle, Sparkles, FileText, Zap } from 'lucide-react';
-import {GoogleGenAI} from "@google/genai"
+
 export default function App() {
   const [text, setText] = useState('');
   const [isChecking, setIsChecking] = useState(false);
@@ -8,30 +8,42 @@ export default function App() {
   const [response, setResponse]=useState("");
   
 
-  const ai=new GoogleGenAI({apiKey: "AIzaSyCZXaQLt7OCd9YL8fNAMxhZfZjR7HZ4U7g"});
 
   const handleCheck = () => {
     setIsChecking(true);
-  
-    async function aiChecker(){
-      const response=await ai.models.generateContent({
-        model:"gemini-2.0-flash",
-        contents:text,
-        config:{
-        systemInstruction:`You are a grammar checker ai, when you receive any text, 
-        you will provide grammatical corrections, short explanation and the corrected sentence/text.
-         Do not respond with anything else besides this, only the grammatical corrections 
-         and the corrected sentence. separate the grammatical suggestion, explanation and the corrected sentence with </br> tags,
-          use html tags for the explanation, corrections and corrected sentence labels and set their class attribute to 'explanations'.
-           If the sentence is grammtical correct, just reply with
-          Your sentence is grammatical.`
+    const callNetlifyFunction=async()=>{
+      try{
+        const result=await fetch('/.netlify/functions/check-grammar',
+          {
+            method:'POST',
+            headers:{
+              'Content-Type':'application/json',
+            },
+            body:JSON.stringify({text:text})
+          }
+        )
+
+        if (!result.ok){
+          const errorData=await result.json()
+          throw new Error(errorData.error || `Request failed with status code ${result.status}`)
         }
-      })
-      setResponse(response.text)
-      setIsChecking(false);
-      setHasResults(true);
+      
+        const {response} =await result.json()
+        setResponse(response)
+        setHasResults(true)
+      }
+
+
+      catch(error){
+        console.error("Error calling netlify function",error)
+        setHasResults(false)
+      }
+      finally{
+        setIsChecking(false)
+      }
     }
-    aiChecker()
+
+    callNetlifyFunction();
   };
 
   const handleClear = () => {
@@ -40,16 +52,16 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-gray-400 to-blue-800 relative overflow-hidden">
-      {/* Animated background elements */}
+    <div className="min-h-screen bg-gradient-to-br from-blue-800 via-blue-100 to-blue-700 relative overflow-hidden">
+     
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-40 left-40 w-80 h-80 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+        <div className="absolute top-40 left-10 w-80 h-80 bg-indigo-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
       </div>
 
       <div className="relative z-10 container mx-auto px-4 py-8 max-w-4xl">
-        {/* Header */}
+    
         <div className="text-center mb-12">
           <div className="flex items-center justify-center mb-4">
             <div className="glass-card p-3 rounded-2xl mr-4 hover-lift mb-5">
