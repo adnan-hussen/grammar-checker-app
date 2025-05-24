@@ -72,13 +72,13 @@ export default function App() {
             </h1>
           </div>
           <p className="text-lg text-black text-shadow-neutral-500 max-w-2xl mx-auto leading-relaxed">
-            Transform your writing with AI-powered grammar checking. Get instant feedback and suggestions to perfect your text.
+            Get instant feedback and suggestions to perfect your text.
           </p>
         </div>
 
-        {/* Main Content */}
+   
         <div className="space-y-8">
-          {/* Text Input Section */}
+       
           <div className="glass-card p-8 rounded-3xl hover-lift">
             <div className="flex items-center mb-6">
               <FileText className="w-6 h-6 text-blue-600 mr-3" />
@@ -98,7 +98,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 mt-6">
               <button
                 onClick={handleCheck}
@@ -128,7 +127,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* Results Section */}
           {hasResults && (
             <div className="glass-card p-8 rounded-3xl hover-lift animate-slide-up">
               <div className="flex items-center mb-6">
@@ -136,7 +134,7 @@ export default function App() {
                 <h2 className="text-xl font-semibold ">Analysis Results</h2>
               </div>
 
-              {/* Sample Results */}
+    
               <div className="space-y-4">
 
                 <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-6">
